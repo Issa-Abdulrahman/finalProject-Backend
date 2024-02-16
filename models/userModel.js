@@ -4,7 +4,7 @@ const userModelSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
@@ -12,10 +12,10 @@ const userModelSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: false,
+      required: true,
     },
     phone: {
-      type: Number,
+      type: String,
       required: false,
     },
     // role: {
@@ -24,7 +24,7 @@ const userModelSchema = new mongoose.Schema(
     // }
     role: {
         type: String,
-        required: true,
+        required: false,
         enum: ['normal', 'registered', 'admin'] // Enum with allowed values
       },
   },
