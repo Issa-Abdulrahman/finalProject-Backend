@@ -9,12 +9,12 @@ const brandModelSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: true,
+      required: false,
     },
     categoryID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
-        required: true,
+        required: false,
     },
     slug: {
         type: String,

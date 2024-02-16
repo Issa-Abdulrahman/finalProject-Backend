@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connect from "./config/config.js";
 import cookieParser from "cookie-parser";
-import {userRouter} from "./routes/userRoutes.js"
+import {userRouter} from "./routes/userRoutes.js";
+import { brandRouter } from "./routes/brandRoutes.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5001;
@@ -22,6 +23,7 @@ const corsOption = {
 
 app.use(cors(corsOption));
 app.use("/user", userRouter);
+app.use("/brand", brandRouter);
 app.listen(PORT, () => {
     connect();
     console.log(`running on port: ${PORT}`);
