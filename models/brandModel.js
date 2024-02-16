@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
 
-const categoryModelSchema = new mongoose.Schema(
+const brandModelSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -24,11 +24,11 @@ const categoryModelSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-categoryModelSchema.pre("save", function (next) {
+brandModelSchema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
-const CategorySchema = mongoose.model("CategorySchema", categoryModelSchema);
+const BrandSchema = mongoose.model("BrandSchema", brandModelSchema);
 
-export default CategorySchema;
+export default BrandSchema;
