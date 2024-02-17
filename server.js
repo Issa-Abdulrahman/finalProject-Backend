@@ -6,7 +6,8 @@ import cookieParser from "cookie-parser";
 import {userRouter} from "./routes/userRoutes.js";
 import { brandRouter } from "./routes/brandRoutes.js";
 import {categoryRouter} from "./routes/categoryRoutes.js";
-import { productRouter } from "./routes/productRoutes.js";
+import {productRouter} from "./routes/productRoutes.js";
+import {orderRoutes} from "./routes/orderRoutes.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5001;
@@ -28,6 +29,7 @@ app.use("/user", userRouter);
 app.use("/brand", brandRouter);
 app.use("/category", categoryRouter);
 app.use("/product", productRouter);
+app.use("/order", orderRoutes);
 app.listen(PORT, () => {
     connect();
     console.log(`running on port: ${PORT}`);
