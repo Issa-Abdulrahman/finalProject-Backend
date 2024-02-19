@@ -25,7 +25,7 @@ const userModelSchema = new mongoose.Schema(
     role: {
         type: String,
         required: false,
-        enum: ['normal', 'registered', 'admin'] // Enum with allowed values
+        enum: ['guest', 'registered', 'admin'] // Enum with allowed values
       },
   },
   { timestamps: true }

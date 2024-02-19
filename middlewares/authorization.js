@@ -19,7 +19,7 @@ export const authorized = async (req, res, next) => {
 export const checkRole = (role) => {
   return (req, res, next) => {
     try {
-      if (role === "admin" || "manager") {
+      if (role === "admin") {
         console.log("user authorized");
         next();
       } else {

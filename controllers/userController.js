@@ -5,7 +5,10 @@ import { createToken, verifyToken } from "../utils/token.js";
 // Sign up function
 export const signup = async (req, res) => {
   let { name, email, role, phone } = req.body;
-  const generatedPassword = "random";
+  if(!password){
+    return res.status(400).json({message:"password is required"});
+  }
+  // const generatedPassword = "random";
   const password = req.body.password || generatedPassword;
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
