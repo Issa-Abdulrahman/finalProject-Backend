@@ -1,20 +1,39 @@
 import multer from "multer";
 import path from "path";
 
-// import fs from "fs";
-// const uploadDirectory = "images";
-// if (!fs.existsSync(uploadDirectory)) {
-// fs.mkdirSync(uploadDirectory);
-// }
-
+// Configure the storage engine for multer
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "images");
+  // @param {Object}   request object.
+  // @param {Object}   The uploaded file.
+  // @param {function} cb - The callback function to specify the destination folder.
+  destination: function (req, file, cb) {
+    cb(null, "images/");
   },
-  filename: (req, file, cb) => {
-    cb(null, "image-" + Date.now() + path.extname(file.originalname));
+  //   @param {Object}  request object.
+  //   @param {Object}  The uploaded file.
+  //  @param {function} cb - The callback function to specify the filename.
+
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, "image-" + uniqueSuffix + path.extname(file.originalname));
   },
 });
 
-const upload = multer({ storage: storage });
-export default upload;
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype == "image/jpeg" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/webp" 
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      return cb(new Error("only jpg , jpeg and png allowed"));
+    }
+  },
+});
+
+export default upload

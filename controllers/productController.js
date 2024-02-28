@@ -1,64 +1,158 @@
 import Product from '../models/productModel.js';
+import slugify from 'slugify';
+import fs from 'fs'
+import mongoose from 'mongoose';
+import Category from '../models/categoryModel.js';
 
 // Controller for creating a new product
 export const createProduct = async (req, res) => {
   try {
-    const newProduct = new Product(req.body);
+    const { name, description, price, stock, category, brand } = req.body;
+
+    if (!name || !description || !price || !stock || !category || !brand) {
+      if (req.file) {
+        const imagePath = `images/${req.file.filename}`
+        fs.unlinkSync(imagePath)
+      }
+      return res.status(400).json({ error: 'all fields are required' })
+    }
+
+    if (!mongoose.isValidObjectId(category)) {
+      const imagePath = `images/${req.file.filename}`
+      fs.unlinkSync(imagePath)
+      return res.status(400).json({ error: 'Invalid product id' })
+    }
+
+    const categoryy = Category.findById(category)
+
+    if(!categoryy){
+      const imagePath = `images/${req.file.filename}`
+      fs.unlinkSync(imagePath)
+      return res.status(400).json({error : 'No category found'})
+    }
+
+    if (!mongoose.isValidObjectId(brand)) {
+      const imagePath = `images/${req.file.filename}`
+      fs.unlinkSync(imagePath)
+      return res.status(400).json({ error: 'Invalid product id' })
+    }
+
+    const brandd = Category.findById(brand)
+
+    if(!brandd){
+      const imagePath = `images/${req.file.filename}`
+      fs.unlinkSync(imagePath)
+      return res.status(400).json({error : 'No category found'})
+    }
+
+    const image = req.file.filename
+    const slug = slugify(name, { lower: true });
+
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      image: image,
+      stock,
+      slug,
+      category
+    });
+
     const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
+    return res.status(201).json(savedProduct);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const imagePath = `images/${req.file.filename}`
+    fs.unlinkSync(imagePath)
+    return res.status(400).json({ message: error.message });
   }
 };
 
 // Controller for getting all products
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
-    res.status(200).json(products);
+    const products = await Product.find().populate('category').sort({ createdAt: -1 });
+    return res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 // Controller for getting a single product by ID
 export const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const id = req.params.id
+
+    if (!id) {
+      return res.status(400).json({ error: 'No id' })
+    }
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({ error: 'Invalid product id' })
+    }
+    const product = await Product.findById();
     if (!product) {
       res.status(404).json({ message: 'Product not found' });
       return;
     }
-    res.status(200).json(product);
+    return res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 // Controller for updating a product by ID
 export const updateProductById = async (req, res) => {
+  const id = req.params.id
+  const {
+    name, description, price, stock, category
+  } = req.body
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedProduct) {
-      res.status(404).json({ message: 'Product not found' });
-      return;
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({ error: 'Invalid product id' })
     }
-    res.status(200).json(updatedProduct);
+
+    if (!name || !description || !price || !stock || !category) {
+      if (req.file) {
+        const imagePath = `images/${req.file.filename}`
+        fs.unlinkSync(imagePath)
+      }
+      return res.status(400).json({ error: 'error' })
+    }
+
+    const image = req.file.filename
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, {
+      name, description, price, stock, category, image
+    }, { new: true });
+
+    if (!updatedProduct) {
+      const imagePath = `images/${req.file.filename}`
+      fs.unlinkSync(imagePath)
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    return res.status(200).json(updatedProduct);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    const imagePath = `images/${req.file.filename}`
+    fs.unlinkSync(imagePath)
+    return res.status(500).json({ message: error.message });
   }
 };
 
 // Controller for deleting a product by ID
 export const deleteProductById = async (req, res) => {
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletedProduct) {
-      res.status(404).json({ message: 'Product not found' });
-      return;
+    const id = req.params.id 
+    if (!id){
+      return res.status(400).json({error : "No id "})
     }
-    res.status(200).json({ message: 'Product deleted successfully' });
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    return res.status(200).json({ message: 'Product deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
+

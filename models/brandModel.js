@@ -11,11 +11,11 @@ const brandModelSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    categoryID: {
+    categoryID: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
         required: false,
-    },
+    }],
     slug: {
         type: String,
         unique: true,
