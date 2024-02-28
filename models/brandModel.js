@@ -14,7 +14,7 @@ const brandModelSchema = new mongoose.Schema(
     categoryID: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
-        required: false,
+        required: true,
     }],
     slug: {
         type: String,

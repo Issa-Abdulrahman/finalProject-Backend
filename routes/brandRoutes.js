@@ -1,4 +1,5 @@
 import express from "express";
+import upload from '../middlewares/multer.js'
 import{
     createBrand,
     getBrands,
@@ -7,12 +8,13 @@ import{
     deleteBrandById
 } from "../controllers/brandController.js"
 
-import { authorized } from "../middlewares/authorization.js";
+// import { authorized } from "../middlewares/authorization.js";
+
 export const  brandRouter = express.Router();
 
 brandRouter.get("/getbrands", getBrands);
 brandRouter.get("/getone/:id", getBrandById);
-brandRouter.post("/createbrand", authorized, createBrand);
-brandRouter.patch("/update/:id", authorized, updateBrandById);
-brandRouter.delete("/delete/:id", authorized, deleteBrandById);
+brandRouter.post("/createbrand",upload.single("image"), createBrand);
+brandRouter.patch("/update/:id", updateBrandById);
+brandRouter.delete("/delete/:id", deleteBrandById);
 

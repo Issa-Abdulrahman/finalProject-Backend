@@ -6,13 +6,15 @@ import{
     getProducts,
     getProductById,
     updateProductById,
-    deleteProductById
+    deleteProductById,
+    getLatestProducts
 } from "../controllers/productController.js"
 
 export const productRouter = express.Router();
 
 productRouter.post("/create", upload.single("image"),createProduct);
 productRouter.get("/getall",getProducts);
+productRouter.get("/latest", getLatestProducts);
 productRouter.get("/getone/:id", getProductById);
 productRouter.patch("/update/:id", updateProductById);
 productRouter.delete("/delete/:id", deleteProductById);

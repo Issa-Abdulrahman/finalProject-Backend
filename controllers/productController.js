@@ -77,6 +77,20 @@ export const getProducts = async (req, res) => {
   }
 };
 
+//controller for getting the latest 4 product
+export const getLatestProducts = async (req, res) => {
+  try {
+    const products = await Product.find()
+      .populate('category')
+      .sort({ createdAt: -1 })
+      .limit(4);
+
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 // Controller for getting a single product by ID
 export const getProductById = async (req, res) => {
   try {

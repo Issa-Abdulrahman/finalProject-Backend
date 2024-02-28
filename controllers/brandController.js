@@ -1,6 +1,7 @@
 import Brand from '../models/brandModel.js';
 import mongoose from 'mongoose';
 import fs from 'fs';
+import slugify from 'slugify';
 import Category from '../models/categoryModel.js';
 
 // Controller for creating a new Brand
