@@ -12,9 +12,10 @@ import{
 
 export const productRouter = express.Router();
 
+
 productRouter.post("/create", upload.single("image"),createProduct);
 productRouter.get("/getall",getProducts);
 productRouter.get("/latest", getLatestProducts);
-productRouter.get("/getone/:id", getProductById);
+productRouter.get("/getone/:slug", getProductById);
 productRouter.patch("/update/:id", updateProductById);
 productRouter.delete("/delete/:id", deleteProductById);

@@ -77,6 +77,16 @@ export const getProducts = async (req, res) => {
   }
 };
 
+export const getProductsByBrand = async (req, res) => {
+  const id = req.body
+  try {
+    const products = await Product.find({brand : id}).populate('category').sort({ createdAt: -1 });
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 //controller for getting the latest 4 product
 export const getLatestProducts = async (req, res) => {
   try {
@@ -94,16 +104,12 @@ export const getLatestProducts = async (req, res) => {
 // Controller for getting a single product by ID
 export const getProductById = async (req, res) => {
   try {
-    const id = req.params.id
+    const slug = req.params.slug
 
-    if (!id) {
-      return res.status(400).json({ error: 'No id' })
+    if (!slug) {
+      return res.status(400).json({ error: 'No slug' })
     }
-
-    if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json({ error: 'Invalid product id' })
-    }
-    const product = await Product.findById();
+    const product = await Product.findOne({slug : slug});
     if (!product) {
       res.status(404).json({ message: 'Product not found' });
       return;
