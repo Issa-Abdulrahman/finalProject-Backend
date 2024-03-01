@@ -175,7 +175,7 @@ export const deleteProductById = async (req, res) => {
 };
 
 export const getProductByBrand = async (req, res) => {
-  const { brand } = req.query; 
+  const brand = req.params.brand; 
   console.log(brand)
   try {
     const products = await Product.find({ brand }).populate('category').sort({ createdAt: -1 });

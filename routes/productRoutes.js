@@ -16,7 +16,7 @@ export const productRouter = express.Router();
 
 productRouter.post("/create", upload.single("image"),createProduct);
 productRouter.get("/getall",getProducts);
-productRouter.get("/getby",getProductByBrand);
+productRouter.get("/getby/:brand",getProductByBrand);
 productRouter.get("/latest", getLatestProducts);
 productRouter.get("/getone/:slug", getProductById);
 productRouter.patch("/update/:id", upload.single("image"), updateProductById);
