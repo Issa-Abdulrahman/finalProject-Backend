@@ -122,39 +122,37 @@ export const getProductById = async (req, res) => {
 
 // Controller for updating a product by ID
 export const updateProductById = async (req, res) => {
-  const id = req.params.id
+  const {id} = req.params
   const {
-    name, description, price, stock, category
+    name, description, price, stock, category, brand
   } = req.body
   try {
-
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ error: 'Invalid product id' })
     }
 
-    if (!name || !description || !price || !stock || !category) {
-      if (req.file) {
-        const imagePath = `images/${req.file.filename}`
-        fs.unlinkSync(imagePath)
-      }
-      return res.status(400).json({ error: 'error' })
+    let image 
+    if (req.file){
+     image = req.file.filename
     }
 
-    const image = req.file.filename
-
     const updatedProduct = await Product.findByIdAndUpdate(id, {
-      name, description, price, stock, category, image
+      name, description, price, stock, category, image, brand
     }, { new: true });
 
     if (!updatedProduct) {
       const imagePath = `images/${req.file.filename}`
-      fs.unlinkSync(imagePath)
-      return res.status(404).json({ message: 'Product not found' });
+      if (req.file){
+        fs.unlinkSync(imagePath)
+        return res.status(404).json({ message: 'Product not found' });
+      }
     }
     return res.status(200).json(updatedProduct);
   } catch (error) {
-    const imagePath = `images/${req.file.filename}`
-    fs.unlinkSync(imagePath)
+    if (req.file) {
+      const imagePath = `images/${req.file.filename}`
+      fs.unlinkSync(imagePath)
+    }
     return res.status(500).json({ message: error.message });
   }
 };
@@ -175,4 +173,16 @@ export const deleteProductById = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const getProductByBrand = async (req, res) => {
+  const { brand } = req.query; 
+  console.log(brand)
+  try {
+    const products = await Product.find({ brand }).populate('category').sort({ createdAt: -1 });
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 

@@ -7,7 +7,8 @@ import{
     getProductById,
     updateProductById,
     deleteProductById,
-    getLatestProducts
+    getLatestProducts,
+    getProductByBrand
 } from "../controllers/productController.js"
 
 export const productRouter = express.Router();
@@ -15,7 +16,8 @@ export const productRouter = express.Router();
 
 productRouter.post("/create", upload.single("image"),createProduct);
 productRouter.get("/getall",getProducts);
+productRouter.get("/getby",getProductByBrand);
 productRouter.get("/latest", getLatestProducts);
 productRouter.get("/getone/:slug", getProductById);
-productRouter.patch("/update/:id", updateProductById);
+productRouter.patch("/update/:id", upload.single("image"), updateProductById);
 productRouter.delete("/delete/:id", deleteProductById);
