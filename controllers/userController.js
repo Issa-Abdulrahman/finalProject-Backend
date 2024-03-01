@@ -73,7 +73,7 @@ export const gsignup = async (req, res) => {
     await newUser.save();
     const token = createToken(newUser);
     const decoded = verifyToken(token);
-    res
+    return res
       .status(200)
       .cookie("userToken", token, {
         secure: true,
@@ -83,7 +83,7 @@ export const gsignup = async (req, res) => {
       .json({ message: "user created successfully", token: decoded });
   } catch (err) {
     console.log(err);
-    res.status(401).send("Something went wrong !");
+    return res.status(401).send("Something went wrong !");
   }
 };
 
@@ -105,7 +105,7 @@ export const login = async (req, res) => {
 
     const token = createToken(user);
     const decoded = verifyToken(token);
-    res
+    return res
       .cookie("userToken", token, {
         secure: true,
         httpOnly: true,
@@ -115,7 +115,7 @@ export const login = async (req, res) => {
       .json({ message: "User logged in successfully", token: decoded });
   } catch (error) {
     console.error("Error logging in:", error);
-    res.status(500).json({ error: "Error logging in" });
+    return res.status(500).json({ error: "Error logging in" });
   }
 };
 
@@ -134,9 +134,9 @@ export const createUser = async (req, res) => {
   try {
     const newUser = new User(req.body);
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    return res.status(201).json(savedUser);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 };
 
@@ -144,9 +144,9 @@ export const createUser = async (req, res) => {
 export const getUsers = async (req, res) => {
   try {
     const users = await UserSchema.find();
-    res.status(200).json(users);
+    return res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -197,14 +197,14 @@ const id = req.params.id;
   console.log("Updating user with ID:", id);
 
   try {
-    const { name, phone, role } = req.body;
+    const { name, email, role } = req.body;
 
     await UserSchema.findByIdAndUpdate(
       { _id: id },
       {
         name: name,
-        // email: email,
-        phone: phone,
+        email: email,
+        // phone: phone,
         role: role,
       }
     );
